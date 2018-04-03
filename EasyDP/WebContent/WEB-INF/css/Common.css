@@ -1,0 +1,100 @@
+@CHARSET "ISO-8859-1";
+p, h1, h2, h3, h4, h5, h6 {
+    font-family: "Cambria", Times, serif;
+    color:black;
+}
+
+h1 {
+	font-size: xx-large;
+}
+
+h2 {
+	font-size: x-large;
+}
+
+h3 {
+	font-size: medium;
+}
+
+
+body {
+	background-repeat: no-repeat;           
+        background-repeat: no-repeat;        
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+        font-size: 12px;
+}
+
+.userHomeCells {
+	padding-bottom: 20px;
+	padding-top: 20px;
+	padding-left: 20px;
+	padding-right: 20px;
+	border: medium;
+        frame: box;
+        rules: none;
+        border-color: silver;
+        text-align: center;
+}
+.userHomeTable {
+        border-collapse: collapse;
+        border: inset;
+        border-color: silver;
+        width: 40%;
+        height: 40%;
+        overflow: auto;
+        margin: auto;
+        position: absolute;
+        top: 0; left: 0; bottom: 0; right: 0;
+        font-size: small;
+        font-weight: bold;
+}
+
+.commonTable {
+	border-collapse: collapse;
+        border: inset;
+        border-color: silver;
+	width: 42%;
+        height: 40%;
+        overflow: auto;
+        margin: auto;
+        position: absolute;
+        top: 0; left: 0; bottom: 0; right: 0;
+}
+
+.wait {
+	width: 25%;
+        height: 25%;
+        overflow: auto;
+        margin: auto;
+        position: absolute;
+        top: 0; left: 0; bottom: 0; right: 0;
+}
+
+.previous {
+        width: 10%;
+        height: 10%;
+        overflow: auto;
+        margin: auto;
+        position: absolute;
+        top: 0; left: 0; bottom: 0; 
+}
+
+.next {
+        width: 10%;
+        height: 10%;
+        overflow: auto;
+        margin: auto;
+        position: absolute;
+        top: 0; bottom: 0; right:0; 
+}
+
+
+.loadMore {
+        width: 30%;
+        height: 20%;
+        overflow: auto;
+        margin: auto;
+        position: absolute;
+        bottom: 0; right: 0;
+        cursor: pointer;
+}

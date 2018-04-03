@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
+	<env:Body>
+		<dp:request xmlns:dp="http://www.datapower.com/schemas/management" domain="SOATest">
+			<dp:get-config class="CryptoValCred"/>
+		</dp:request>
+	</env:Body>
+</env:Envelope>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
+  <env:Body>
+    <dp:request xmlns:dp="http://www.datapower.com/schemas/management" domain="SOATest">
+      <dp:set-config>
+        <CryptoCertificate xmlns:env="http://www.w3.org/2003/05/soap-envelope" name="o2_testsupport">
+          <mAdminState>enabled</mAdminState>
+          <Filename>cert:///o2_testsupport_cert20190501.pem</Filename>
+          <PasswordAlias>off</PasswordAlias>
+          <IgnoreExpiration>off</IgnoreExpiration>
+        </CryptoCertificate>
+      </dp:set-config>
+    </dp:request>
+  </env:Body>
+</env:Envelope>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dp="http://www.datapower.com/schemas/management">
+  <env:Body>
+    <dp:request domain="SOATest">
+      <dp:do-action>
+        <SaveConfig/>
+      </dp:do-action>
+    </dp:request>
+  </env:Body>
+</env:Envelope>
