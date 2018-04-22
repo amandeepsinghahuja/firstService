@@ -42,6 +42,7 @@ public class MainController {
 	@RequestMapping(value = "/checkDomainStatus", method = RequestMethod.GET )
 	public ModelMap checkDomainStatus()
 	{
+		System.out.println("INSIDE CDM MAIN");
 		ModelMap mp= new ModelMap("checkDomainStatus");
 		return mp;
 	}

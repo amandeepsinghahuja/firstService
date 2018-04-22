@@ -12,7 +12,6 @@
     <script type="text/javascript">
      
     function checkDomainStatus() {        
-        //alert("checkDomainStatus");
         $.ajax
         (
                         {

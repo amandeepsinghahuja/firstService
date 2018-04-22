@@ -18,5 +18,6 @@
    </bean>
    <mvc:resources mapping="/images/**" location="/WEB-INF/images/" />
    <mvc:resources mapping="/css/**" location="/WEB-INF/css/" />
+   <mvc:resources mapping="/soap/**" location="/src/resources/soap/" />
    <mvc:annotation-driven/>
 </beans>

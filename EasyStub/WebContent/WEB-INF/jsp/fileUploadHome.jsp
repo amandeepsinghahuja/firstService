@@ -42,7 +42,7 @@
       (
        		{
        			 type: "POST",
-        		 data: { "arguments" : ["domain:"+domain+"@fileName:"+fileName+"@fileContent:"+fileContent].toString() },
+        		 data: { "arguments" : ["fileName:"+fileName+"@fileContent:"+fileContent].toString() },
                  url : 'fileUploadSubmit.html',
                  success : function(data)
         		 {
@@ -84,7 +84,7 @@
     <tr>
      <td>Upload File</td>
      <td>
-      <input type="file" id="filePath" multiple="multiple" onchange='openFile(event)' name="upload" style="width: 413px; ">
+      <input type="file" id="filePath" onchange='openFile(event)' name="upload" style="width: 413px; ">
       <script>
       			var openFile = function(event) {
 	    			var input = event.target;

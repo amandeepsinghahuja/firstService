@@ -18,11 +18,11 @@
                 <!-- <td class="userHomeCells"><a href="/EasyStub/cryptoCertUpdate"><img  src="images/Crypto_Validation.jpg" height="150px" width="150px" border="0"/><br/>CryptoValCred Update</a></td> -->
 	</tr>
 	<tr/>
-	<!-- <tr>
+	<tr>
                 <td class="userHomeCells"><a href="/EasyStub/checkDomainStatus"><img  src="images/Check_Object.jpg" height="150px" width="150px" border="0"/><br/>Check Domain Status</a></td>
                 <td class="userHomeCells"><a href="/EasyStub/checkDomainHealth"><img  src="images/Health_CheckUp.jpg" height="150px" width="150px" border="0"/><br/>Check Domain Health</a></td>
                 <td class="userHomeCells"><a href="/EasyStub/checkDomainStatus"><img  src="images/Coming_Soon.jpg" height="150px" width="150px" border="0"/><br/>Coming Soon...</a></td>
-	</tr> -->
+	</tr>
 </table>
 </form>
 </body>

@@ -1,5 +1,6 @@
 package com.easystub.controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.easystub.model.*;
 import com.easystub.service.*;
@@ -39,9 +41,18 @@ public class SomaController {
 	@Value("${saveConfigRESP}")
 	String saveRespSuffix;
 	
-	String pathPrefix = "/EasyDP/src/webapp/XML/getStatus.xml";
+	String pathPrefix = "E:\\Soma Deployment\\EasyStub\\WebContent\\WEB-INF\\";
 	//String localPathPrefix = "C:\\Users\\415907\\Desktop\\";    
+	
 	String localPathPrefix = "resources/";
+	
+	@RequestMapping(value = "/", method = RequestMethod.POST )
+	public String displayStub()
+	{
+		
+		return "NOTHING";
+	}
+	
 	@RequestMapping(value = "/userHome", method = RequestMethod.POST )
 	public ModelMap displayHome(@ModelAttribute("SomaParameters") SomaParameters sp,  @Value("${getStatusRESP}") String suffix )
 	{ 
@@ -246,54 +257,25 @@ public class SomaController {
 
 	@RequestMapping(value = "/fileUploadSubmit", method = RequestMethod.POST )
 	public @ResponseBody  
-	String getFileUploadStatus(@RequestParam("arguments") List<String> arguments,  @Value("${uploadFileREQ}") String reqSuffix, @Value("${uploadFileRESP}") String respSuffix)
+	String getFileUploadStatus(@RequestParam("arguments") List<String> arguments)
 	{
-		String ipAddress = smObject.getIpAdd().substring(0,smObject.getIpAdd().indexOf("-"));
-		String reqFileURL = localPathPrefix + "XML/uploadFile.xml";
-		String respFileURL = localPathPrefix + "XML/uploadFileResponse.xml";
+		String arg[] = arguments.get(0).split("@");
+		String fileName = arg[0].toString().substring(arg[0].toString().indexOf(':')+1, arg[0].toString().length());
+		String fileContent = arg[1].toString().substring(arg[1].toString().indexOf(':')+1, arg[1].toString().length());
+		String reqType = arg[2].toString().substring(arg[2].toString().indexOf(':')+1, arg[2].toString().length());
+		String stubURI = arg[3].toString().substring(arg[3].toString().indexOf(':')+1, arg[3].toString().length());
+		String prefix = reqType;
+		String stubFilePath = pathPrefix + "\\stubs\\" + prefix + "\\"+ fileName;
+		String stubConfigPath = pathPrefix + "\\stubs\\StubConfig.xml";
+		//String reqFileURL = localPathPrefix + "XML/getFileStore.xml";
 		sendSomaRequest ss = new sendSomaRequest();
-
-		HashMap<String,String> hm = new HashMap<String,String>();
-
-		String splitVal[] = reqSuffix.split("#");   
-		for( int i = 0 ; i < splitVal.length ; i++ )
-		{
-			String temp = splitVal[i];
-			hm.put(temp.substring(0,temp.indexOf("?")),temp.substring(temp.indexOf("?")+1,temp.length()));
-		}
-
-		String values[];
-		String xpathArgs[];
-		
-		int len = splitVal.length ;
-		values = new String[len];
-		xpathArgs = new String[len];
-
-		try
-		{   
-			String arg[] = arguments.get(0).split("@");
-			int size = arg.length - 1;
-			byte binData[] = arg[size].substring(arg[size].indexOf(":")+1).getBytes();
-			String encodedString = Base64.encodeBase64String(binData);
-			arg[size] = "fileContent:"+encodedString;
-
-			for( int i = 0 ; i < arg.length ; i++ )
-			{
-				values[i] = arg[i].substring(arg[i].indexOf(":")+1);
-				xpathArgs[i] = reqPrefix + hm.get(arg[i].substring(0,arg[i].indexOf(":")));
-			}
-			String finalURL = "https://"+ipAddress+"/service/mgmt/current";
-			String soapReq = ss.createSoapReqTemp(reqFileURL,xpathArgs,values);
-			String soapResp = ss.sendRequestTemp(finalURL,soapReq,smObject.getUsername(),smObject.getPassword(),respFileURL);
-			String respXpathExpr = respPrefix + respSuffix.substring(0,respSuffix.indexOf("#"));
-			String result[] = ss.parseResponseTemp(soapResp,respXpathExpr);
-			return result[0];
-		}
-		catch (Exception e)
-		{
+		try {
+			ss.write2StubFile(stubConfigPath,stubURI,fileContent,stubFilePath);
+			//ss.write2File(fileContent,stubFilePath);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return stubFilePath;	
 	}
 	
 	@RequestMapping(value = "/mulFileUploadSubmit", method = RequestMethod.POST )
@@ -416,15 +398,17 @@ public class SomaController {
 	public @ResponseBody  
 	String getDomainStatus(@RequestParam("arguments") List<String> arguments, @Value("${checkDomainStatusRESP}") String respSuffixes)
 	{
-		String ipAddress = smObject.getIpAdd().substring(0,smObject.getIpAdd().indexOf("-"));
+		/*String ipAddress = smObject.getIpAdd().substring(0,smObject.getIpAdd().indexOf("-"));*/
 		String reqFileURL = localPathPrefix + "XML/getDomainStatus.xml";
 		String respFileURL = localPathPrefix + "XML/getDomainStatusResponse.xml";
 		sendSomaRequest ss = new sendSomaRequest();
 
 		try
 		{ 
-			String finalURL = "https://"+ipAddress+"/service/mgmt/current";
+			System.out.println("INSIDE CDM SOMA");
+			/*String finalURL = "https://"+ipAddress+"/service/mgmt/current";*/
 			String soapReq = ss.createSoapReqTemp(reqFileURL,null,null);
+			/*
 			String soapResp = ss.sendRequestTemp(finalURL,soapReq,smObject.getUsername(),smObject.getPassword(),respFileURL);
 			String respXpathExprForDomainName = respPrefix + respSuffixes.substring(0,respSuffixes.indexOf("#"));
 			String respXpathExprForState = respPrefix + respSuffixes.substring(respSuffixes.indexOf("#")+1);
@@ -439,7 +423,7 @@ public class SomaController {
 				result = result + Domains[i] + ":" + States[i] + "#";
 			}
 			return result;
-		}
+*/		}
 		catch (Exception e)
 		{
 			e.printStackTrace();

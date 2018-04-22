@@ -5,16 +5,23 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import javax.annotation.Resource;
@@ -26,6 +33,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -41,6 +49,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
+import com.easystub.controller.SomaController;
 
 /**
  *
@@ -82,7 +92,7 @@ public class sendSomaRequest{
 	}
 	public void write2File(String content,String fileName) throws IOException
 	{
-
+		//System.out.println(content);
 		File file = new File(fileName);
 
 		// if file doesn't exists, then create it
@@ -94,11 +104,53 @@ public class sendSomaRequest{
 
 		FileWriter fw = new FileWriter(file.getAbsoluteFile());
 		BufferedWriter bw = new BufferedWriter(fw);
-		byte b[]=Base64.decodeBase64(content);
-		bw.write(new String(b, "UTF-8"));
+		bw.write(content);
 		bw.close();
 
 	}
+	
+	public void write2StubFile(String configPath,String stubURI,String content,String stubFilePath) throws IOException, URISyntaxException
+	{
+		//Update Config File 
+		try {
+			String newpath = "E:\\Soma Deployment\\EasyStub\\WebContent\\WEB-INF\\stubs\\StubConfig.xml";
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			org.w3c.dom.Document doc = dBuilder.parse(newpath);
+			doc.normalize();
+
+			//System.out.println(doc.getElementsByTagName("st:respFile").item(0).getNodeName());
+			Node newStub = doc.getElementsByTagName("Stub").item(0).cloneNode(true);
+			((org.w3c.dom.Element)newStub).setAttribute("uri",stubURI);
+			NodeList n = newStub.getChildNodes();
+			for ( int i = 0; i < n.getLength(); i++)
+			{
+				if (  n.item(i).getNodeName().toString() == "respFile")
+				{
+					n.item(i).setTextContent(stubFilePath);
+				}
+			}
+			doc.getDocumentElement().appendChild(newStub);
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			DOMSource source = new DOMSource(doc);
+			//System.out.println(doc.getDocumentElement().getChildNodes().item(0).getTextContent());
+			//StreamResult result = new StreamResult(new File(filePath));
+			Writer out = new StringWriter();
+			StreamResult result = new StreamResult(out);
+			transformer.transform(source, result);
+			write2File(out.toString(),configPath);
+			write2File(content,stubFilePath);
+		} 
+		catch (Exception ex) 
+		{
+			System.out.println(ex.getMessage());
+		}
+		// Upload Stub Resp File
+	}
+
+	
 	public String base64Encode(String filePath) throws IOException
 	{
 
@@ -207,6 +259,7 @@ public class sendSomaRequest{
 			while ((inputLine = in.readLine()) != null){
 				outReq = outReq+inputLine;
 			}
+			System.out.println("FILE TEXT :"+outReq);
 		}
 		else
 		{
