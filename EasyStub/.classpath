@@ -32,5 +32,6 @@
 	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/org.springframework.web.struts-3.1.0.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/spring-web.jar"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="E:/Soma Deployment/Spring Jars/javax.servlet-api-3.0.1.jar/javax.servlet-api-3.0.1.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

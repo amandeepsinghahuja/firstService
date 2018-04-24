@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Stubs>
-	<Stub uri="default">
+	<Stub type="SOAP" uri="default">
 		<respFile>default</respFile>
 	</Stub>
-<Stub uri="/abcd/v1">
-		<respFile>E:\Soma Deployment\EasyStub\WebContent\WEB-INF\\stubs\SOAP\signature.txt</respFile>
-	</Stub>
-<Stub uri="/efgh/v1">
-		<respFile>E:\Soma Deployment\EasyStub\WebContent\WEB-INF\\stubs\SOAP\BaseString.txt</respFile>
-	</Stub>
-<Stub uri="/wxyz/v1">
-		<respFile>E:\Soma Deployment\EasyStub\WebContent\WEB-INF\\stubs\JSON\sctestingkey.pem</respFile>
+<Stub type="SOAP" uri="/abcd/v1">
+		<respFile>E:\Soma Deployment\EasyStub\WebContent\WEB-INF\\stubs\SOAP\sampleSOAP.xml</respFile>
 	</Stub>
 </Stubs>

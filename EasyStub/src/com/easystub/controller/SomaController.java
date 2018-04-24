@@ -4,16 +4,23 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
+
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.WebApplicationContext;
+import org.xml.sax.SAXException;
 
 import com.easystub.model.*;
 import com.easystub.service.*;
@@ -46,11 +53,34 @@ public class SomaController {
 	
 	String localPathPrefix = "resources/";
 	
-	@RequestMapping(value = "/", method = RequestMethod.POST )
-	public String displayStub()
+	@RequestMapping(value = "//**", method = RequestMethod.POST, produces = "application/xml" )
+	public @ResponseBody String displayStub(HttpServletRequest request)
 	{
-		
-		return "NOTHING";
+		String tempURI = request.getRequestURI().toString();
+		String uri = tempURI.substring(tempURI.lastIndexOf("/EasyStub")+9);
+		String contentType = request.getContentType().toString();
+		System.out.println(contentType);
+		String reqType="";
+		if ( contentType == "application/soap+xml")
+		{
+			reqType = "SOAP";
+		}
+		else if ( contentType == "application/json")
+		{
+			reqType = "JSON";
+		}
+		System.out.println("REQTYPE:"+reqType);
+		String stubConfigPath = pathPrefix + "\\stubs\\StubConfig.xml";
+		sendSomaRequest ss = new sendSomaRequest();
+		String response="";
+		try {
+			response = ss.returnStub(stubConfigPath,uri,"SOAP","POST");
+		} catch (XPathExpressionException | ParserConfigurationException
+				| SAXException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return response;
 	}
 	
 	@RequestMapping(value = "/userHome", method = RequestMethod.POST )
@@ -262,15 +292,15 @@ public class SomaController {
 		String arg[] = arguments.get(0).split("@");
 		String fileName = arg[0].toString().substring(arg[0].toString().indexOf(':')+1, arg[0].toString().length());
 		String fileContent = arg[1].toString().substring(arg[1].toString().indexOf(':')+1, arg[1].toString().length());
-		String reqType = arg[2].toString().substring(arg[2].toString().indexOf(':')+1, arg[2].toString().length());
+		String stubType = arg[2].toString().substring(arg[2].toString().indexOf(':')+1, arg[2].toString().length());
 		String stubURI = arg[3].toString().substring(arg[3].toString().indexOf(':')+1, arg[3].toString().length());
-		String prefix = reqType;
+		String prefix = stubType;
 		String stubFilePath = pathPrefix + "\\stubs\\" + prefix + "\\"+ fileName;
 		String stubConfigPath = pathPrefix + "\\stubs\\StubConfig.xml";
 		//String reqFileURL = localPathPrefix + "XML/getFileStore.xml";
 		sendSomaRequest ss = new sendSomaRequest();
 		try {
-			ss.write2StubFile(stubConfigPath,stubURI,fileContent,stubFilePath);
+			ss.write2StubFile(stubConfigPath,stubURI,fileContent,stubFilePath,stubType);
 			//ss.write2File(fileContent,stubFilePath);
 		} catch (Exception e) {
 			e.printStackTrace();

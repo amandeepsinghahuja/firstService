@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +34,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -41,6 +43,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.codec.binary.Base64;        //check for this library
@@ -49,6 +52,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import com.easystub.controller.SomaController;
 
@@ -109,19 +113,20 @@ public class sendSomaRequest{
 
 	}
 	
-	public void write2StubFile(String configPath,String stubURI,String content,String stubFilePath) throws IOException, URISyntaxException
+	public void write2StubFile(String configPath,String stubURI,String content,String stubFilePath, String stubType) throws IOException, URISyntaxException
 	{
 		//Update Config File 
 		try {
-			String newpath = "E:\\Soma Deployment\\EasyStub\\WebContent\\WEB-INF\\stubs\\StubConfig.xml";
+			//String newpath = "E:\\Soma Deployment\\EasyStub\\WebContent\\WEB-INF\\stubs\\StubConfig.xml";
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			org.w3c.dom.Document doc = dBuilder.parse(newpath);
+			org.w3c.dom.Document doc = dBuilder.parse(configPath);
 			doc.normalize();
 
 			//System.out.println(doc.getElementsByTagName("st:respFile").item(0).getNodeName());
 			Node newStub = doc.getElementsByTagName("Stub").item(0).cloneNode(true);
 			((org.w3c.dom.Element)newStub).setAttribute("uri",stubURI);
+			((org.w3c.dom.Element)newStub).setAttribute("type",stubType);
 			NodeList n = newStub.getChildNodes();
 			for ( int i = 0; i < n.getLength(); i++)
 			{
@@ -184,6 +189,46 @@ public class sendSomaRequest{
 		{
 			System.out.println(ex.getMessage());
 		}
+	}
+	
+	public String returnStub(String stubConfigPath, String uri, String reqType, String reqMethod) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException
+	{
+		
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+		org.w3c.dom.Document doc = dBuilder.parse(stubConfigPath);
+		doc.normalize();
+		XPathFactory factory = XPathFactory.newInstance();
+		XPath xPathO = factory.newXPath();
+		XPathExpression expr;
+		String xpath = ".//Stub[@uri='"+uri+"' and @type='"+reqType+"']";
+		System.out.println(xpath);
+		expr = xPathO.compile(xpath);
+		String matchFileName="";
+		NodeList matchNode = (NodeList) expr.evaluate(doc,XPathConstants.NODESET);
+		System.out.println(matchNode.getLength());
+		if ( matchNode.getLength() == 1)
+		{
+			NodeList childNodes = matchNode.item(0).getChildNodes();
+			for ( int i = 0; i < childNodes.getLength(); i++)
+			{
+				if (  childNodes.item(i).getNodeName().toString() == "respFile")
+				{
+					matchFileName = childNodes.item(i).getTextContent();
+				}
+			}
+		}
+		System.out.println("FILE :"+matchFileName);
+	    String outReq="";
+	    FileReader fr = new FileReader(matchFileName);
+		BufferedReader br = new BufferedReader(fr);
+
+		String inputLine;
+		while ((inputLine = br.readLine()) != null){
+			outReq = outReq+inputLine;
+		}
+
+		return outReq;
 	}
 
 	public void createSoapReq(String filePath,String xpathArgs[], String values[])
